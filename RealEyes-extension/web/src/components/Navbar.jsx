@@ -34,8 +34,8 @@ export default function Navbar() {
         <div className="w-10 h-10 rounded-lg overflow-hidden border border-deepRed/30 group-hover:glow-red transition-all duration-300 shadow-[0_0_10px_rgba(255,0,0,0.3)]">
           <img src="/logo.png?v=3" alt="RealEyes Logo" className="w-full h-full object-contain" />
         </div>
-        <span className="font-display font-bold text-xl tracking-wider uppercase text-white group-hover:glow-text-red transition-all duration-300">
-          RealEyes <span className="text-deepRed">AI</span>
+        <span className="font-display font-bold text-xl tracking-wider uppercase text-white group-hover:glow-text-red transition-all duration-300 flex items-baseline">
+          <span className="text-[1.25em]">R</span>EAL<span className="text-[1.25em]">E</span>YES
         </span>
       </Link>
 
@@ -64,7 +64,7 @@ export default function Navbar() {
           href="/realeyes-extension-v1.zip"
           download
           onClick={() => setIsExtModalOpen(true)}
-          className="text-xs font-bold tracking-wide flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded drop-shadow-[0_0_12px_rgba(37,99,235,0.4)] text-white hover:scale-105 hover:from-blue-500 hover:to-indigo-500 transition-all cursor-pointer"
+          className="text-xs font-bold tracking-wide flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-red-800 to-rose-600 border border-rose-500/80 rounded shadow-[0_0_25px_rgba(225,29,72,0.9)] text-white hover:scale-105 hover:shadow-[0_0_35px_rgba(225,29,72,1)] hover:from-red-700 hover:to-rose-500 transition-all duration-300 cursor-pointer"
         >
           <Download className="w-3.5 h-3.5" />
           EXTENSION

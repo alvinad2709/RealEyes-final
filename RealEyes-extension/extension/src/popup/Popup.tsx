@@ -105,8 +105,8 @@ export default function Popup() {
       setStatus("Cam Monitor stopped");
       await sendToActiveTab({ type: "STOP_CAM_MONITOR" });
     }
-    // Small delay before close to show status
-    setTimeout(() => window.close(), 1000);
+    // Close popup after message is fully delivered
+    setTimeout(() => window.close(), 600);
   };
 
   return (

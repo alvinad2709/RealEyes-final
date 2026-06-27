@@ -57,3 +57,15 @@ try {
 } catch {
   // Storage API not available in this context
 }
+
+// Auto-restart cam monitor if it was active before navigation
+try {
+  chrome.storage.session.get("camMonitorOn", (data) => {
+    if (chrome.runtime.lastError) return;
+    if (data?.camMonitorOn) {
+      startCamMonitor();
+    }
+  });
+} catch {
+  // Storage API not available in this context
+}
