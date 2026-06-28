@@ -1,6 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useContext } from 'react';
 import { UploadCloud, Link as LinkIcon, AlertTriangle, ShieldCheck, Settings, Fingerprint, ThumbsUp, ThumbsDown, Zap, Search, Share2, FileText, RefreshCw, ZoomIn } from 'lucide-react';
 import clsx from 'clsx';
+import { SubscriptionContext } from '../context/SubscriptionContext';
+import SessionCounter from '../components/SessionCounter';
+import UsageLimitModal from '../components/UsageLimitModal';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, BorderStyle, WidthType } from 'docx';
 import { saveAs } from 'file-saver';
 
@@ -13,9 +16,17 @@ export default function ImageDetect() {
   const [urlInput, setUrlInput] = useState('');
   const [feedbackStatus, setFeedbackStatus] = useState(null);
   const [showReverseSearch, setShowReverseSearch] = useState(false);
+  const [showLimitModal, setShowLimitModal] = useState(false);
   const fileInputRef = useRef(null);
+  const { canDetect, consumeSession } = useContext(SubscriptionContext);
 
   const startAnalysis = async (file) => {
+    // Check session limit before proceeding
+    if (!canDetect()) {
+      setShowLimitModal(true);
+      return;
+    }
+
     if (file) {
       setPreviewUrl(URL.createObjectURL(file));
     } else if (urlInput && activeTab === 'url') {
@@ -24,6 +35,9 @@ export default function ImageDetect() {
     setResults(null);
     setFeedbackStatus(null);
     setAnalyzing(true);
+
+    // Consume one session
+    consumeSession();
     
     try {
       const formData = new FormData();
@@ -235,7 +249,16 @@ export default function ImageDetect() {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="w-full max-w-7xl mx-auto px-4 py-8">
+      {/* Session Counter */}
+      <div className="mb-6">
+        <SessionCounter />
+      </div>
+
+      {/* Usage Limit Modal */}
+      <UsageLimitModal isOpen={showLimitModal} onClose={() => setShowLimitModal(false)} />
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       
       {/* Left Column - Input & Preview */}
       <div className="space-y-6">
@@ -540,6 +563,7 @@ export default function ImageDetect() {
         )}
       </div>
 
+      </div>
     </div>
   );
 }

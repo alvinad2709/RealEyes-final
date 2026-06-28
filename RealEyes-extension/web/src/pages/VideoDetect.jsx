@@ -1,6 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useContext } from 'react';
 import { UploadCloud, AlertTriangle, ShieldCheck, Settings, Fingerprint, ThumbsUp, ThumbsDown, Zap, Film, Play, Layers } from 'lucide-react';
 import clsx from 'clsx';
+import { SubscriptionContext } from '../context/SubscriptionContext';
+import SessionCounter from '../components/SessionCounter';
+import UsageLimitModal from '../components/UsageLimitModal';
 
 export default function VideoDetect() {
   const [analyzing, setAnalyzing] = useState(false);
@@ -9,15 +12,27 @@ export default function VideoDetect() {
   const [isHovering, setIsHovering] = useState(false);
   const [feedbackStatus, setFeedbackStatus] = useState(null);
   const [fileName, setFileName] = useState(null);
+  const [showLimitModal, setShowLimitModal] = useState(false);
   const fileInputRef = useRef(null);
+  const { canDetect, consumeSession } = useContext(SubscriptionContext);
 
   const startAnalysis = async (file) => {
     if (!file) return;
+
+    // Check session limit before proceeding
+    if (!canDetect()) {
+      setShowLimitModal(true);
+      return;
+    }
+
     setPreviewUrl(URL.createObjectURL(file));
     setFileName(file.name);
     setResults(null);
     setFeedbackStatus(null);
     setAnalyzing(true);
+
+    // Consume session
+    consumeSession();
 
     try {
       const formData = new FormData();
@@ -72,7 +87,16 @@ export default function VideoDetect() {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="w-full max-w-7xl mx-auto px-4 py-8">
+      {/* Session Counter */}
+      <div className="mb-6">
+        <SessionCounter />
+      </div>
+
+      {/* Usage Limit Modal */}
+      <UsageLimitModal isOpen={showLimitModal} onClose={() => setShowLimitModal(false)} />
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
       {/* Left Column - Upload & Preview */}
       <div className="space-y-6">
@@ -342,6 +366,7 @@ export default function VideoDetect() {
         )}
       </div>
 
+      </div>
     </div>
   );
 }

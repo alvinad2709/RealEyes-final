@@ -13,7 +13,7 @@ Model label mapping: {0: 'artificial', 1: 'real'}
 
 import torch
 from PIL import Image
-from transformers import AutoFeatureExtractor, AutoModelForImageClassification
+from transformers import AutoImageProcessor, AutoModelForImageClassification
 import io
 
 # ── Model singleton ───────────────────────────────────────────────────────────
@@ -39,7 +39,7 @@ def load_model():
     global _model, _extractor
     if _model is None:
         print(f"[ImageModel] Loading '{MODEL_ID}' on {DEVICE}...")
-        _extractor = AutoFeatureExtractor.from_pretrained(MODEL_ID)
+        _extractor = AutoImageProcessor.from_pretrained(MODEL_ID)
         _model = AutoModelForImageClassification.from_pretrained(MODEL_ID)
         _model.to(DEVICE)
         _model.eval()

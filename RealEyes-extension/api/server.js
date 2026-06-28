@@ -13,6 +13,7 @@ const app = express();
 
 import authRoutes from './routes/auth.js';
 import toolsRoutes from './routes/tools.js';
+import subscriptionRoutes from './routes/subscription.js';
 
 // Middleware
 app.use(cors());
@@ -21,6 +22,7 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/tools', toolsRoutes);
+app.use('/api/subscription', subscriptionRoutes);
 
 // Basic route
 app.get('/', (req, res) => {

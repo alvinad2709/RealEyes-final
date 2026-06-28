@@ -18,6 +18,19 @@ const userSchema = new mongoose.Schema(
       minlength: 6,
       select: false, // Don't return password by default
     },
+    plan: {
+      type: String,
+      enum: ['basic', 'premium'],
+      default: 'basic',
+    },
+    sessionsUsed: {
+      type: Number,
+      default: 0,
+    },
+    billingCycleStart: {
+      type: Date,
+      default: Date.now,
+    },
   },
   {
     timestamps: true,

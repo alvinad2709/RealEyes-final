@@ -130,6 +130,28 @@ export default function Landing() {
         </div>
       </div>
 
+      {/* Pricing CTA Section */}
+      <div className="w-full max-w-4xl py-20 px-6 text-center">
+        <div className="glass-panel p-12 border border-deepBorder relative overflow-hidden group hover:border-deepRed/30 transition-all duration-500">
+          <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-deepRed/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+          <div className="relative z-10">
+            <p className="text-xs text-deepRed uppercase tracking-wider font-mono font-bold mb-3">Flexible Plans</p>
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
+              Start <span className="text-deepGreen glow-text-green">Free</span>, Scale When Ready
+            </h2>
+            <p className="text-textMuted max-w-lg mx-auto mb-8">
+              Get 20 free detection sessions every month. Need more? Upgrade to Premium for unlimited scans, faster processing, and priority support.
+            </p>
+            <Link
+              to="/pricing"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-deepRed/10 border border-deepRed text-deepRed rounded-xl font-bold hover:bg-deepRed hover:text-white hover:glow-red transition-all duration-300"
+            >
+              View Pricing Plans &rarr;
+            </Link>
+          </div>
+        </div>
+      </div>
+
       {/* About Us Section */}
       <div className="w-full bg-black/40 border-y border-deepBorder py-24 relative overflow-hidden" id="about">
         <div className="absolute right-0 top-0 w-1/3 h-full bg-gradient-to-l from-deepRed/5 to-transparent pointer-events-none" />
