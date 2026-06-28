@@ -12,11 +12,7 @@ export default function Navbar() {
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'Image Detect', path: '/detect-image' },
-    { name: 'Live Liveness', path: '/live-detect' },
-    { name: 'Fake News', path: '/fake-news' },
-    { name: 'Upgrade', path: '/upgrade' },
-    { name: 'Awareness', path: '/awareness' },
-    { name: 'AI Chat', path: '/ai-chat' },
+    { name: 'Pricing', path: '/pricing' },
   ];
 
   const handleLogout = () => {

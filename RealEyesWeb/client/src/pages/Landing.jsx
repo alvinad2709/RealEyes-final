@@ -10,28 +10,10 @@ export default function Landing() {
       tag: 'Core'
     },
     {
-      title: 'Fake News Checker',
-      desc: 'Groq LLaMA-based NLP model. Semantically evaluates truth directly from news text.',
-      icon: <FileText className="w-6 h-6 text-green-500" />,
-      tag: 'NLP'
-    },
-    {
       title: 'Explainable AI (XAI)',
       desc: 'Advanced architectural matrices explain which regions generated the fake verdict.',
       icon: <Brain className="w-6 h-6 text-cyan-400" />,
       tag: 'XAI'
-    },
-    {
-      title: 'AI Explainability Chat',
-      desc: 'Context-aware chatbot powered by Hugging Face that explains every detection result.',
-      icon: <MessageSquare className="w-6 h-6 text-purple-500" />,
-      tag: 'Chat'
-    },
-    {
-      title: 'Awareness Hub',
-      desc: 'Educational modules, real-world deepfake case studies, and interactive knowledge sets.',
-      icon: <BookOpen className="w-6 h-6 text-yellow-500" />,
-      tag: 'Education'
     },
     {
       title: 'Blockchain Trust Hash',
@@ -83,10 +65,6 @@ export default function Landing() {
             <Link to="/detect-image" className="w-full sm:w-auto px-8 py-4 bg-deepRed/10 border border-deepRed text-deepRed rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-deepRed hover:text-white hover:glow-red transition-all duration-300">
               <Shield className="w-5 h-5" />
               DETECT DEEPFAKE &rarr;
-            </Link>
-            <Link to="/fake-news" className="w-full sm:w-auto px-8 py-4 bg-deepCard border border-deepBorder text-textMuted rounded-xl font-bold flex items-center justify-center gap-2 hover:text-white transition-all duration-300">
-              <FileText className="w-5 h-5" />
-              CHECK FAKE NEWS
             </Link>
           </div>
         </div>

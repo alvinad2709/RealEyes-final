@@ -3,11 +3,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import Navbar from './components/Navbar';
 import Landing from './pages/Landing';
 import ImageDetect from './pages/ImageDetect';
-import FakeNews from './pages/FakeNews';
-import LiveDetect from './pages/LiveDetect';
 import VideoDetect from './pages/VideoDetect';
-import Awareness from './pages/Awareness';
-import AIChat from './pages/AIChat';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -37,16 +33,6 @@ function App() {
                   <ImageDetect />
                 </ProtectedRoute>
               } />
-              <Route path="/fake-news" element={
-                <ProtectedRoute>
-                  <FakeNews />
-                </ProtectedRoute>
-              } />
-              <Route path="/live-detect" element={
-                <ProtectedRoute>
-                  <LiveDetect />
-                </ProtectedRoute>
-              } />
               
               {/* Placeholder routes for the other nav links */}
               <Route path="/detect-video" element={
@@ -55,8 +41,7 @@ function App() {
                 </ProtectedRoute>
               } />
               <Route path="/detect-audio" element={<div className="p-20 text-center text-textMuted">Audio Detection Module Coming Soon</div>} />
-              <Route path="/awareness" element={<Awareness />} />
-              <Route path="/ai-chat" element={<AIChat />} />
+
             </Routes>
           </main>
         </div>

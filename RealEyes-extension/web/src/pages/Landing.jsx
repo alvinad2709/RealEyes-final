@@ -12,32 +12,6 @@ export default function Landing() {
       tag: 'Core'
     },
     {
-      title: 'Fake News Checker',
-      desc: 'Groq LLaMA-based NLP model. Semantically evaluates truth directly from news text.',
-      icon: <FileText className="w-6 h-6 text-green-500" />,
-      tag: 'NLP'
-    },
-
-    {
-      title: 'AI Explainability Chat',
-      desc: 'Context-aware AI assistant powered by LLaMA-3.3 via Groq that helps explain detection results and synthetic media concepts.',
-      icon: <MessageSquare className="w-6 h-6 text-purple-500" />,
-      tag: 'Chat'
-    },
-    {
-      title: 'Awareness Hub',
-      desc: 'Learn about synthetic media threats, detection techniques, and how to protect digital identities against manipulation.',
-      icon: <BookOpen className="w-6 h-6 text-yellow-500" />,
-      tag: 'Education'
-    },
-
-    {
-      title: 'Live Camera Analysis',
-      desc: 'Direct integration with our browser extension safely captures and analyzes live feed streams to catch real-time deepfakes.',
-      icon: <Activity className="w-6 h-6 text-pink-500" />,
-      tag: 'Live'
-    },
-    {
       title: 'Real-Time Inference',
       desc: 'Hybrid processing: local inference for computer vision transformers and ultra-fast Groq LPU routing for LLM tasks.',
       icon: <Zap className="w-6 h-6 text-deepGreen" />,

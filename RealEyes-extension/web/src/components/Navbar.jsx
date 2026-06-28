@@ -1,4 +1,4 @@
-import { Shield, Zap, LogOut, User, Download, X, MonitorPlay } from 'lucide-react';
+import { Shield, Zap, LogOut, User, Download, X, MonitorPlay, Tag } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
@@ -14,11 +14,6 @@ export default function Navbar() {
     { name: 'Home', path: '/' },
     { name: 'Image Detect', path: '/detect-image' },
     { name: 'Video Detect', path: '/detect-video' },
-    { name: 'Live Liveness', path: '/live-detect' },
-    { name: 'Fake News', path: '/fake-news' },
-    { name: 'Upgrade', path: '/upgrade' },
-    { name: 'Awareness', path: '/awareness' },
-    { name: 'AI Chat', path: '/ai-chat' },
   ];
 
   const handleLogout = () => {
@@ -59,6 +54,18 @@ export default function Navbar() {
             </Link>
           );
         })}
+      </div>
+
+      {/* Auth Actions */}
+      <div className="flex items-center gap-3">
+        {/* Pricing Button */}
+        <Link
+          to="/pricing"
+          className="text-xs font-bold tracking-wide flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-red-800 to-rose-600 border border-rose-500/80 rounded shadow-[0_0_25px_rgba(225,29,72,0.9)] text-white hover:scale-105 hover:shadow-[0_0_35px_rgba(225,29,72,1)] hover:from-red-700 hover:to-rose-500 transition-all duration-300 cursor-pointer"
+        >
+          <Tag className="w-3.5 h-3.5" />
+          PRICING
+        </Link>
 
         {/* Extension Download Button (Highlighted) */}
         <a
@@ -70,10 +77,6 @@ export default function Navbar() {
           <Download className="w-3.5 h-3.5" />
           EXTENSION
         </a>
-      </div>
-
-      {/* Auth Actions */}
-      <div className="flex items-center gap-3">
         {user ? (
           <>
             <div className="hidden md:flex items-center gap-2 px-3 py-1.5 border border-deepBorder rounded bg-deepCard text-xs font-mono text-textMuted">
