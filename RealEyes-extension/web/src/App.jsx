@@ -11,6 +11,7 @@ import { AuthProvider } from './context/AuthContext';
 import { SubscriptionProvider } from './context/SubscriptionContext';
 import Pricing from './pages/Pricing';
 
+// Deepguard Web Application Portal
 function App() {
   return (
     <GoogleOAuthProvider clientId="684963872923-sri19mctkrsitioh76a4l4sisrrhdrk6.apps.googleusercontent.com">
