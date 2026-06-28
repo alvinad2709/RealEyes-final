@@ -7,8 +7,10 @@ import https from 'https';
 // Lightweight in-memory cache to satisfy Challenge 3 (Technical Moat & Caching)
 const localCache = new Map();
 
-// Configure the AI backend URL dynamically from environment (defaults to local for development)
-const AI_BACKEND_URL = process.env.AI_BACKEND_URL || 'http://127.0.0.1:8000';
+// Configure the AI backend URL dynamically (auto-detects Render production vs local development)
+const AI_BACKEND_URL = process.env.AI_BACKEND_URL || (process.env.RENDER === 'true' 
+  ? 'https://realeyes-final-2.onrender.com' 
+  : 'http://127.0.0.1:8000');
 
 export const detectImage = async (req, res) => {
   try {
