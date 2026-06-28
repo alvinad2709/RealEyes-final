@@ -59,6 +59,8 @@ def predict(image_bytes: bytes) -> dict:
         }
     """
     extractor, model = load_model()
+    assert extractor is not None, "Extractor is not loaded"
+    assert model is not None, "Model is not loaded"
 
     # Decode image
     image = Image.open(io.BytesIO(image_bytes)).convert("RGB")

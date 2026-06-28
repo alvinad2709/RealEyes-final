@@ -135,10 +135,10 @@ export default function Landing() {
               Get 20 free detection sessions every month. Need more? Upgrade to Premium for unlimited scans, faster processing, and priority support.
             </p>
             <Link
-              to="/pricing"
+              to="/upgrade"
               className="inline-flex items-center gap-2 px-8 py-4 bg-deepRed/10 border border-deepRed text-deepRed rounded-xl font-bold hover:bg-deepRed hover:text-white hover:glow-red transition-all duration-300"
             >
-              View Pricing Plans &rarr;
+              Upgrade to Premium &rarr;
             </Link>
           </div>
         </div>

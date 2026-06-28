@@ -40,7 +40,7 @@ export default function VideoDetect() {
 
       const token = localStorage.getItem('token');
 
-      const response = await fetch('http://localhost:5000/api/tools/detect-video', {
+      const response = await fetch('http://localhost:5001/api/tools/detect-video', {
         method: 'POST',
         headers: {
           ...(token ? { 'Authorization': `Bearer ${token}` } : {})
@@ -66,7 +66,7 @@ export default function VideoDetect() {
   const submitFeedback = async (verdict) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/tools/feedback', {
+      const response = await fetch('http://localhost:5001/api/tools/feedback', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

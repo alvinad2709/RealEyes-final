@@ -58,6 +58,8 @@ def predict(audio_bytes: bytes) -> dict:
         }
     """
     extractor, model = load_model()
+    assert extractor is not None, "Extractor is not loaded"
+    assert model is not None, "Model is not loaded"
 
     # Decode audio to float32 numpy at 16kHz
     # Use FFmpeg subprocess to convert any format (WebM, MP3, etc.) to WAV

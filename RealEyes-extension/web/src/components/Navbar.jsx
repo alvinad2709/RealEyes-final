@@ -16,7 +16,7 @@ export default function Navbar() {
     { name: 'Video Detect', path: '/detect-video' },
     { name: 'Live Liveness', path: '/live-detect' },
     { name: 'Fake News', path: '/fake-news' },
-    { name: 'Pricing', path: '/pricing' },
+    { name: 'Upgrade', path: '/upgrade' },
     { name: 'Awareness', path: '/awareness' },
     { name: 'AI Chat', path: '/ai-chat' },
   ];

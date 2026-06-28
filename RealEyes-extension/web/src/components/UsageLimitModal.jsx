@@ -39,7 +39,7 @@ export default function UsageLimitModal({ isOpen, onClose }) {
 
         <div className="flex flex-col gap-3">
           <button
-            onClick={() => navigate('/pricing')}
+            onClick={() => navigate('/upgrade')}
             className="w-full py-3 rounded-xl bg-deepRed/10 border border-deepRed text-deepRed font-semibold text-sm uppercase tracking-wider hover:bg-deepRed hover:text-white hover:glow-red transition-all duration-300 flex items-center justify-center gap-2"
           >
             <Crown className="w-4 h-4" />

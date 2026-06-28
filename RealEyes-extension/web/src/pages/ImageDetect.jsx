@@ -49,7 +49,7 @@ export default function ImageDetect() {
 
       const token = localStorage.getItem('token');
       
-      const response = await fetch('http://localhost:5000/api/tools/detect-image', {
+      const response = await fetch('http://localhost:5001/api/tools/detect-image', {
         method: 'POST',
         headers: {
           ...(token ? { 'Authorization': `Bearer ${token}` } : {})
@@ -74,7 +74,7 @@ export default function ImageDetect() {
   const submitFeedback = async (verdict) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/tools/feedback', {
+      const response = await fetch('http://localhost:5001/api/tools/feedback', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -183,7 +183,7 @@ export default function ImageDetect() {
          const formData = new FormData();
          formData.append('image', blob, 'search_image.jpg');
          
-         const uploadRes = await fetch('http://localhost:5000/api/tools/temp-upload', {
+         const uploadRes = await fetch('http://localhost:5001/api/tools/temp-upload', {
            method: 'POST',
            body: formData
          });
@@ -206,7 +206,7 @@ export default function ImageDetect() {
     const blob = await res.blob();
     const formData = new FormData();
     formData.append('image', blob, 'search_image.jpg');
-    const uploadRes = await fetch('http://localhost:5000/api/tools/temp-upload', {
+    const uploadRes = await fetch('http://localhost:5001/api/tools/temp-upload', {
       method: 'POST',
       body: formData
     });

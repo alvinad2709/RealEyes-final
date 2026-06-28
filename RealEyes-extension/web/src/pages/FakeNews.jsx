@@ -18,7 +18,7 @@ export default function FakeNews() {
     setError(null);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/tools/factcheck', {
+      const response = await axios.post('http://localhost:5001/api/tools/factcheck', {
         query: inputValue
       });
 
