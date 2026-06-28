@@ -4,11 +4,20 @@ import Feedback from '../models/Feedback.js';
 import FormDataNode from 'form-data';
 import https from 'https';
 
+// Lightweight in-memory cache to satisfy Challenge 3 (Technical Moat & Caching)
+const localCache = new Map();
+
 export const runFactCheck = async (req, res) => {
   try {
     const { query } = req.body;
     if (!query) {
        return res.status(400).json({ message: "No query provided" });
+    }
+
+    const cacheKey = `query_${query.trim().toLowerCase()}`;
+    if (localCache.has(cacheKey)) {
+      console.log(`[LocalCache] Hit for fact-check query: "${query}"`);
+      return res.json(localCache.get(cacheKey));
     }
 
     const GROQ_API_KEY = process.env.GROQ_API_KEY;
@@ -58,10 +67,13 @@ Respond strictly in valid JSON format only, matching this structure:
         throw new Error("Failed to parse AI response into JSON. Raw output: " + lllmOutputString);
     }
 
-    res.json({
+    const resultPayload = {
        originalQuery: query,
        ...parsedResult
-    });
+    };
+
+    localCache.set(cacheKey, resultPayload);
+    res.json(resultPayload);
 
   } catch (error) {
     console.error("Fact Check/Groq Error:", error);
@@ -76,10 +88,26 @@ export const detectImage = async (req, res) => {
     let isFake = false;
     let confidence = 0;
     let anomalies = [];
+    let fileHash;
     
     if (req.file) {
        fileBuffer = req.file.buffer;
        
+       // Check cache using SHA-256 hash of image file buffer
+       const hashSum = crypto.createHash('sha256');
+       hashSum.update(fileBuffer);
+       fileHash = hashSum.digest('hex');
+
+       const cacheKey = `img_${fileHash}`;
+       if (localCache.has(cacheKey)) {
+          console.log(`[LocalCache] Hit for image file hash: ${fileHash}`);
+          const cached = localCache.get(cacheKey);
+          return res.json({
+             ...cached,
+             time: `${Date.now() - startTime}ms (cached)`
+          });
+       }
+
        // Pass the image directly to Python AI Backend
        const formData = new FormData();
        const blob = new Blob([fileBuffer], { type: req.file.mimetype });
@@ -98,6 +126,16 @@ export const detectImage = async (req, res) => {
        anomalies = data.details.analysis_points;
        
     } else if (req.body.url) {
+       const cacheKey = `img_url_${req.body.url}`;
+       if (localCache.has(cacheKey)) {
+          console.log(`[LocalCache] Hit for image URL: ${req.body.url}`);
+          const cached = localCache.get(cacheKey);
+          return res.json({
+             ...cached,
+             time: `${Date.now() - startTime}ms (cached)`
+          });
+       }
+
        // Pass URL to Python AI Backend
        const formData = new FormData();
        formData.append('url', req.body.url);
@@ -119,14 +157,13 @@ export const detectImage = async (req, res) => {
        const arrayBuf = await imgRes.arrayBuffer();
        fileBuffer = Buffer.from(arrayBuf);
        
+       const hashSum = crypto.createHash('sha256');
+       hashSum.update(fileBuffer);
+       fileHash = hashSum.digest('hex');
+
     } else {
        return res.status(400).json({ message: "No image file or URL provided" });
     }
-
-    // Generate cryptographic hash for frontend ledger
-    const hashSum = crypto.createHash('sha256');
-    hashSum.update(fileBuffer);
-    const fileHash = hashSum.digest('hex');
 
     // Format strictly to React ImageDetect.jsx's expected state
     const parsedResult = {
@@ -140,6 +177,14 @@ export const detectImage = async (req, res) => {
         anomalies: anomalies,
         time: (Date.now() - startTime) + "ms"
     };
+
+    // Cache the result
+    if (fileHash) {
+       localCache.set(`img_${fileHash}`, parsedResult);
+    }
+    if (req.body.url) {
+       localCache.set(`img_url_${req.body.url}`, parsedResult);
+    }
 
     res.json(parsedResult);
 
@@ -182,6 +227,21 @@ export const detectVideo = async (req, res) => {
 
     const fileBuffer = req.file.buffer;
 
+    // Cryptographic hash for caching & frontend ledger
+    const hashSum = crypto.createHash('sha256');
+    hashSum.update(fileBuffer);
+    const fileHash = hashSum.digest('hex');
+
+    const cacheKey = `vid_${fileHash}`;
+    if (localCache.has(cacheKey)) {
+      console.log(`[LocalCache] Hit for video file hash: ${fileHash}`);
+      const cached = localCache.get(cacheKey);
+      return res.json({
+        ...cached,
+        time: `${Date.now() - startTime}ms (cached)`
+      });
+    }
+
     // Forward the video to Python FastAPI backend /analyze/clip
     const formData = new FormData();
     const blob = new Blob([fileBuffer], { type: req.file.mimetype });
@@ -198,11 +258,6 @@ export const detectVideo = async (req, res) => {
     }
 
     const data = await pyReq.json();
-
-    // Generate cryptographic hash
-    const hashSum = crypto.createHash('sha256');
-    hashSum.update(fileBuffer);
-    const fileHash = hashSum.digest('hex');
 
     const isFake = data.label === "FAKE";
     const confidence = Math.round(data.confidence);
@@ -222,6 +277,7 @@ export const detectVideo = async (req, res) => {
       time: (Date.now() - startTime) + "ms"
     };
 
+    localCache.set(cacheKey, parsedResult);
     res.json(parsedResult);
 
   } catch (error) {
