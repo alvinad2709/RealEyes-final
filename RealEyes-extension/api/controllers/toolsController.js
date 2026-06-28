@@ -7,6 +7,9 @@ import https from 'https';
 // Lightweight in-memory cache to satisfy Challenge 3 (Technical Moat & Caching)
 const localCache = new Map();
 
+// Configure the AI backend URL dynamically from environment (defaults to local for development)
+const AI_BACKEND_URL = process.env.AI_BACKEND_URL || 'http://127.0.0.1:8000';
+
 export const detectImage = async (req, res) => {
   try {
     const startTime = Date.now();
@@ -39,7 +42,7 @@ export const detectImage = async (req, res) => {
        const blob = new Blob([fileBuffer], { type: req.file.mimetype });
        formData.append('file', blob, req.file.originalname);
        
-       const pyReq = await fetch('http://127.0.0.1:8000/analyze/image', {
+       const pyReq = await fetch(`${AI_BACKEND_URL}/analyze/image`, {
          method: 'POST',
          body: formData
        });
@@ -66,7 +69,7 @@ export const detectImage = async (req, res) => {
        const formData = new FormData();
        formData.append('url', req.body.url);
        
-       const pyReq = await fetch('http://127.0.0.1:8000/analyze/image-url', {
+       const pyReq = await fetch(`${AI_BACKEND_URL}/analyze/image-url`, {
          method: 'POST',
          body: formData
        });
@@ -173,7 +176,7 @@ export const detectVideo = async (req, res) => {
     const blob = new Blob([fileBuffer], { type: req.file.mimetype });
     formData.append('file', blob, req.file.originalname || 'upload.mp4');
 
-    const pyReq = await fetch('http://127.0.0.1:8000/analyze/clip', {
+    const pyReq = await fetch(`${AI_BACKEND_URL}/analyze/clip`, {
       method: 'POST',
       body: formData
     });

@@ -5,6 +5,10 @@ import { SubscriptionContext } from '../context/SubscriptionContext';
 import SessionCounter from '../components/SessionCounter';
 import UsageLimitModal from '../components/UsageLimitModal';
 
+const API_BASE = import.meta.env.DEV 
+  ? 'http://localhost:5001' 
+  : 'https://realeyes-final.onrender.com';
+
 export default function VideoDetect() {
   const [analyzing, setAnalyzing] = useState(false);
   const [results, setResults] = useState(null);
@@ -40,7 +44,7 @@ export default function VideoDetect() {
 
       const token = localStorage.getItem('token');
 
-      const response = await fetch('http://localhost:5001/api/tools/detect-video', {
+      const response = await fetch(`${API_BASE}/api/tools/detect-video`, {
         method: 'POST',
         headers: {
           ...(token ? { 'Authorization': `Bearer ${token}` } : {})
@@ -66,7 +70,7 @@ export default function VideoDetect() {
   const submitFeedback = async (verdict) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5001/api/tools/feedback', {
+      const response = await fetch(`${API_BASE}/api/tools/feedback`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

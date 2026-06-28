@@ -4,6 +4,10 @@ import { AuthContext } from './AuthContext';
 
 export const SubscriptionContext = createContext();
 
+const API_BASE = import.meta.env.DEV 
+  ? 'http://localhost:5001' 
+  : 'https://realeyes-final.onrender.com';
+
 const SESSIONS_LIMIT_BASIC = 20;
 const STORAGE_KEYS = {
   plan: 'dg_plan',
@@ -26,7 +30,7 @@ export const SubscriptionProvider = ({ children }) => {
       if (!token) return;
 
       try {
-        const res = await axios.get('http://localhost:5001/api/subscription/status', {
+        const res = await axios.get(`${API_BASE}/api/subscription/status`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setPlan(res.data.plan);
@@ -75,7 +79,7 @@ export const SubscriptionProvider = ({ children }) => {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        await axios.post('http://localhost:5001/api/subscription/consume', {}, {
+        await axios.post(`${API_BASE}/api/subscription/consume`, {}, {
           headers: { Authorization: `Bearer ${token}` }
         });
       } catch (err) {
@@ -90,7 +94,7 @@ export const SubscriptionProvider = ({ children }) => {
     const token = localStorage.getItem('token');
     if (token && newPlan === 'premium') {
       try {
-        await axios.post('http://localhost:5001/api/subscription/upgrade', {}, {
+        await axios.post(`${API_BASE}/api/subscription/upgrade`, {}, {
           headers: { Authorization: `Bearer ${token}` }
         });
       } catch (err) {

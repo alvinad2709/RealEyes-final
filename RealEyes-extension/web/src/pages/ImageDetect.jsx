@@ -7,6 +7,10 @@ import UsageLimitModal from '../components/UsageLimitModal';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, BorderStyle, WidthType } from 'docx';
 import { saveAs } from 'file-saver';
 
+const API_BASE = import.meta.env.DEV 
+  ? 'http://localhost:5001' 
+  : 'https://realeyes-final.onrender.com';
+
 export default function ImageDetect() {
   const [activeTab, setActiveTab] = useState('upload');
   const [isHovering, setIsHovering] = useState(false);
@@ -49,7 +53,7 @@ export default function ImageDetect() {
 
       const token = localStorage.getItem('token');
       
-      const response = await fetch('http://localhost:5001/api/tools/detect-image', {
+      const response = await fetch(`${API_BASE}/api/tools/detect-image`, {
         method: 'POST',
         headers: {
           ...(token ? { 'Authorization': `Bearer ${token}` } : {})
@@ -74,7 +78,7 @@ export default function ImageDetect() {
   const submitFeedback = async (verdict) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5001/api/tools/feedback', {
+      const response = await fetch(`${API_BASE}/api/tools/feedback`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -183,7 +187,7 @@ export default function ImageDetect() {
          const formData = new FormData();
          formData.append('image', blob, 'search_image.jpg');
          
-         const uploadRes = await fetch('http://localhost:5001/api/tools/temp-upload', {
+         const uploadRes = await fetch(`${API_BASE}/api/tools/temp-upload`, {
            method: 'POST',
            body: formData
          });
@@ -206,7 +210,7 @@ export default function ImageDetect() {
     const blob = await res.blob();
     const formData = new FormData();
     formData.append('image', blob, 'search_image.jpg');
-    const uploadRes = await fetch('http://localhost:5001/api/tools/temp-upload', {
+    const uploadRes = await fetch(`${API_BASE}/api/tools/temp-upload`, {
       method: 'POST',
       body: formData
     });
