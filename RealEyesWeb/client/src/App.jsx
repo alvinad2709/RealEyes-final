@@ -4,8 +4,6 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Landing from './pages/Landing';
 import ImageDetect from './pages/ImageDetect';
-import FakeNews from './pages/FakeNews';
-import LiveDetect from './pages/LiveDetect';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Pricing from './pages/Pricing';
@@ -35,22 +33,10 @@ function App() {
                   <ImageDetect />
                 </ProtectedRoute>
               } />
-              <Route path="/fake-news" element={
-                <ProtectedRoute>
-                  <FakeNews />
-                </ProtectedRoute>
-              } />
-              <Route path="/live-detect" element={
-                <ProtectedRoute>
-                  <LiveDetect />
-                </ProtectedRoute>
-              } />
               
               {/* Placeholder routes for the other nav links */}
               <Route path="/detect-video" element={<div className="p-20 text-center text-textMuted">Video Detection Module Coming Soon</div>} />
               <Route path="/detect-audio" element={<div className="p-20 text-center text-textMuted">Audio Detection Module Coming Soon</div>} />
-              <Route path="/awareness" element={<div className="p-20 text-center text-textMuted">Awareness Hub Coming Soon</div>} />
-              <Route path="/ai-chat" element={<div className="p-20 text-center text-textMuted">AI Chat Module Coming Soon</div>} />
             </Routes>
           </main>
 

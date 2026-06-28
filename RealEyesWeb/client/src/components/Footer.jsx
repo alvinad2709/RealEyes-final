@@ -42,7 +42,6 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-textMuted">
               <li><Link to="/detect-image" className="hover:text-deepRed hover:underline underline-offset-4 transition-colors">Vision Net (Images)</Link></li>
               <li><Link to="/detect-video" className="hover:text-deepRed hover:underline underline-offset-4 transition-colors">Temporal Net (Video)</Link></li>
-              <li><Link to="/fake-news" className="hover:text-deepRed hover:underline underline-offset-4 transition-colors">Semantic Net (News)</Link></li>
               <li><Link to="/detect-audio" className="hover:text-deepRed hover:underline underline-offset-4 transition-colors">Acoustic Net (Voice)</Link></li>
             </ul>
           </div>
@@ -53,8 +52,6 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-textMuted">
               <li><span className="hover:text-white cursor-pointer transition-colors">About Us</span></li>
               <li><Link to="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
-              <li><Link to="/awareness" className="hover:text-white transition-colors">Education Hub</Link></li>
-              <li><Link to="/ai-chat" className="hover:text-white transition-colors">Inference Chat API</Link></li>
               <li><span className="hover:text-white cursor-pointer transition-colors">Documentation</span></li>
             </ul>
           </div>

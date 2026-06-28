@@ -4,71 +4,6 @@ import Feedback from '../models/Feedback.js';
 import FormDataNode from 'form-data';
 import https from 'https';
 
-export const runFactCheck = async (req, res) => {
-  try {
-    const { query } = req.body;
-    if (!query) {
-       return res.status(400).json({ message: "No query provided" });
-    }
-
-    const GROQ_API_KEY = process.env.GROQ_API_KEY;
-    if (!GROQ_API_KEY) {
-       return res.status(500).json({ message: "GROQ_API_KEY is not configured on the server." });
-    }
-
-    const systemPrompt = `You are RealEyes, an elite cyber-threat and fake news analyzer. 
-Analyze the user's text and determine if it is likely FAKE, REAL, or SUSPICIOUS (clickbait/misleading/unverified).
-Respond strictly in valid JSON format only, matching this structure:
-{
-  "status": "FAKE" | "REAL" | "SUSPICIOUS",
-  "confidence": <integer between 0 and 100 representing how confident you are in this assessment>,
-  "explanation": "<A 2-3 sentence technical and analytical explanation of your reasoning>",
-  "category": "<The core topic, e.g., Politics, Tech, Health>"
-}`;
-
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${GROQ_API_KEY.trim()}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: query }
-        ],
-        response_format: { type: "json_object" }
-      })
-    });
-
-    if (!response.ok) {
-       const errData = await response.json();
-       throw new Error(`Groq API Error: ${errData.error?.message || response.statusText}`);
-    }
-
-    const data = await response.json();
-    const lllmOutputString = data.choices[0].message.content;
-
-    // Safely parse LLM JSON
-    let parsedResult;
-    try {
-        parsedResult = JSON.parse(lllmOutputString);
-    } catch(e) {
-        throw new Error("Failed to parse AI response into JSON. Raw output: " + lllmOutputString);
-    }
-
-    res.json({
-       originalQuery: query,
-       ...parsedResult
-    });
-
-  } catch (error) {
-    console.error("Fact Check/Groq Error:", error);
-    res.status(500).json({ message: error.message || 'AI Analysis Failed' });
-  }
-};
-
 export const detectImage = async (req, res) => {
   try {
     const startTime = Date.now();
@@ -227,52 +162,6 @@ export const detectVideo = async (req, res) => {
   } catch (error) {
     console.error("Detect Video Pipeline Error:", error);
     res.status(500).json({ message: error.message || 'Video Analysis Pipeline Failed' });
-  }
-};
-
-export const aiChat = async (req, res) => {
-  try {
-    const { messages } = req.body;
-    if (!messages || !Array.isArray(messages)) {
-      return res.status(400).json({ message: "Messages array is required." });
-    }
-
-    const GROQ_API_KEY = process.env.GROQ_API_KEY;
-    if (!GROQ_API_KEY) {
-      return res.status(500).json({ message: "GROQ_API_KEY is not configured on the server." });
-    }
-
-    const systemPrompt = {
-      role: "system",
-      content: "You are the RealEyes AI Explainability Assistant. You help users understand deepfakes, synthetic media, KYC protocols, and interpret security detection results. Keep your responses concise, highly technical but accessible, and strictly focused on forensics, deep algorithms (GANs, Autoencoders, Diffusion Models), and cybersecurity."
-    };
-
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${GROQ_API_KEY.trim()}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
-        messages: [systemPrompt, ...messages]
-      })
-    });
-
-    if (!response.ok) {
-       const errData = await response.json();
-       throw new Error(`Groq API Error: ${errData.error?.message || response.statusText}`);
-    }
-
-    const data = await response.json();
-    res.json({
-      role: "assistant",
-      content: data.choices[0].message.content
-    });
-
-  } catch (error) {
-    console.error("AI Chat Error:", error);
-    res.status(500).json({ message: error.message || 'AI Chat inference failed' });
   }
 };
 
