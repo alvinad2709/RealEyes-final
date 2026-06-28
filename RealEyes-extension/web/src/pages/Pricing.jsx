@@ -1,6 +1,6 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Check, Zap, Crown, Sparkles, Star, ArrowRight } from 'lucide-react';
+import { Shield, Check, Zap, Crown, Sparkles, Star, ArrowRight, CreditCard, Calendar, Lock, Loader2, X, AlertTriangle } from 'lucide-react';
 import { SubscriptionContext } from '../context/SubscriptionContext';
 import { AuthContext } from '../context/AuthContext';
 import clsx from 'clsx';
@@ -38,6 +38,14 @@ export default function Pricing() {
   const { user } = useContext(AuthContext);
   const { plan, upgradePlan } = useContext(SubscriptionContext);
 
+  // Simulated Payment Window states
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [cardNumber, setCardNumber] = useState('4111 2222 3333 4444');
+  const [expiry, setExpiry] = useState('12/28');
+  const [cvv, setCvv] = useState('123');
+
   const handleGetStarted = () => {
     if (!user) {
       navigate('/signup');
@@ -47,9 +55,33 @@ export default function Pricing() {
     }
   };
 
-  const handleUpgrade = () => {
-    upgradePlan('premium');
-    navigate('/detect-image');
+  const handleUpgradeClick = () => {
+    if (!user) {
+      navigate('/signup');
+    } else {
+      setShowPaymentModal(true);
+    }
+  };
+
+  const executeSimulatedPayment = async (e) => {
+    e.preventDefault();
+    setIsProcessing(true);
+
+    // Simulate 2 seconds of payment gateway contact
+    setTimeout(async () => {
+      setIsProcessing(false);
+      setPaymentSuccess(true);
+
+      // Upgrade plan (makes API call to upgrade in MongoDB Atlas)
+      await upgradePlan('premium');
+
+      // Hide success modal after 2 seconds and redirect
+      setTimeout(() => {
+        setShowPaymentModal(false);
+        setPaymentSuccess(false);
+        navigate('/detect-image');
+      }, 2000);
+    }, 2000);
   };
 
   return (
@@ -156,7 +188,7 @@ export default function Pricing() {
             ))}
           </ul>
           <button
-            onClick={handleUpgrade}
+            onClick={handleUpgradeClick}
             disabled={plan === 'premium'}
             className={clsx(
               "w-full py-3.5 rounded-xl font-semibold text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-300",
@@ -230,6 +262,134 @@ export default function Pricing() {
           </p>
         </div>
       </div>
+
+      {/* Simulated Payment Modal */}
+      {showPaymentModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center">
+          {/* Backdrop */}
+          <div 
+            className="absolute inset-0 bg-black/80 backdrop-blur-md animate-[fadeIn_0.2s_ease-out]"
+            onClick={() => !isProcessing && !paymentSuccess && setShowPaymentModal(false)}
+          />
+
+          {/* Modal Container */}
+          <div className="relative z-10 w-full max-w-md mx-4 glass-panel border border-deepRed/30 p-8 shadow-[0_0_60px_rgba(255,42,42,0.18)] animate-[scaleIn_0.3s_ease-out] bg-[#0c0c0c]/90 rounded-2xl">
+            
+            {/* Close button */}
+            {!isProcessing && !paymentSuccess && (
+              <button
+                onClick={() => setShowPaymentModal(false)}
+                className="absolute top-4 right-4 p-1.5 rounded-lg text-textMuted hover:text-white hover:bg-deepCard transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+
+            {paymentSuccess ? (
+              /* Success State */
+              <div className="text-center py-8 space-y-4 animate-[fadeIn_0.4s_ease-out]">
+                <div className="w-16 h-16 bg-deepGreen/10 border border-deepGreen/30 rounded-full flex items-center justify-center mx-auto shadow-[0_0_30px_rgba(0,255,100,0.15)]">
+                  <Check className="w-8 h-8 text-deepGreen" />
+                </div>
+                <h3 className="text-2xl font-display font-bold text-white uppercase tracking-wider">Transaction Success</h3>
+                <p className="text-sm text-textMuted max-w-xs mx-auto">
+                  Payment cleared securely. Clearances updated in our database. Upgraded to Premium.
+                </p>
+                <div className="pt-2 font-mono text-[10px] text-textMuted uppercase tracking-widest">
+                  Txn ID: TXN-{Math.random().toString(36).substring(2, 11).toUpperCase()}
+                </div>
+              </div>
+            ) : isProcessing ? (
+              /* Processing State */
+              <div className="text-center py-8 space-y-4">
+                <Loader2 className="w-12 h-12 text-deepRed animate-spin mx-auto" />
+                <h3 className="text-lg font-display font-bold text-white uppercase tracking-wider">Processing Transaction</h3>
+                <p className="text-xs text-textMuted max-w-xs mx-auto font-mono">
+                  Connecting to secure payment gateway...
+                </p>
+              </div>
+            ) : (
+              /* Form State */
+              <form onSubmit={executeSimulatedPayment} className="space-y-6">
+                <div className="flex items-center gap-3 border-b border-deepBorder pb-4">
+                  <div className="p-2 bg-deepRed/10 border border-deepRed/20 rounded-xl">
+                    <Crown className="w-5 h-5 text-deepRed" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-display font-bold text-white uppercase tracking-wider">Secure Checkout</h3>
+                    <p className="text-xs text-textMuted font-mono">Deepguard AI Premium Clearance</p>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-[10px] font-mono text-textMuted uppercase tracking-wider mb-2 block">Premium Subtotal</label>
+                    <div className="w-full bg-deepBase border border-deepBorder rounded-lg px-4 py-3 flex items-center justify-between text-sm font-semibold">
+                      <span className="text-textMuted">₹899.00 / month</span>
+                      <span className="text-deepRed glow-text-red">₹899.00</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] font-mono text-textMuted uppercase tracking-wider mb-2 block">Card Number</label>
+                    <div className="relative">
+                      <CreditCard className="w-4 h-4 text-textMuted absolute left-3.5 top-1/2 -translate-y-1/2" />
+                      <input 
+                        type="text"
+                        value={cardNumber}
+                        onChange={(e) => setCardNumber(e.target.value)}
+                        className="w-full bg-deepBase border border-deepBorder rounded-lg pl-10 pr-4 py-3 text-white focus:outline-none focus:border-deepRed/50 focus:glow-red transition-all font-mono text-sm"
+                        placeholder="4111 2222 3333 4444"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-[10px] font-mono text-textMuted uppercase tracking-wider mb-2 block">Expiration</label>
+                      <div className="relative">
+                        <Calendar className="w-4 h-4 text-textMuted absolute left-3.5 top-1/2 -translate-y-1/2" />
+                        <input 
+                          type="text"
+                          value={expiry}
+                          onChange={(e) => setExpiry(e.target.value)}
+                          className="w-full bg-deepBase border border-deepBorder rounded-lg pl-10 pr-4 py-3 text-white focus:outline-none focus:border-deepRed/50 focus:glow-red transition-all font-mono text-sm"
+                          placeholder="MM/YY"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-mono text-textMuted uppercase tracking-wider mb-2 block">CVV</label>
+                      <div className="relative">
+                        <Lock className="w-4 h-4 text-textMuted absolute left-3.5 top-1/2 -translate-y-1/2" />
+                        <input 
+                          type="password"
+                          value={cvv}
+                          onChange={(e) => setCvv(e.target.value)}
+                          className="w-full bg-deepBase border border-deepBorder rounded-lg pl-10 pr-4 py-3 text-white focus:outline-none focus:border-deepRed/50 focus:glow-red transition-all font-mono text-sm"
+                          placeholder="•••"
+                          maxLength={4}
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-3.5 rounded-xl bg-deepRed/10 border border-deepRed text-deepRed font-semibold text-sm uppercase tracking-wider hover:bg-deepRed hover:text-white hover:glow-red transition-all duration-300 flex items-center justify-center gap-2"
+                >
+                  <Lock className="w-4 h-4" />
+                  PAY ₹899.00
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

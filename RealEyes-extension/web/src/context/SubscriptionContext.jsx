@@ -1,4 +1,6 @@
-import { createContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useState, useEffect, useCallback, useContext } from 'react';
+import axios from 'axios';
+import { AuthContext } from './AuthContext';
 
 export const SubscriptionContext = createContext();
 
@@ -16,8 +18,26 @@ export const SubscriptionProvider = ({ children }) => {
     return stored ? parseInt(stored, 10) : 0;
   });
 
-  // Auto-reset sessions when the month changes
+  const { token } = useContext(AuthContext);
+
+  // Load status from DB whenever the auth token changes
   useEffect(() => {
+    const fetchSubscription = async () => {
+      if (!token) return;
+
+      try {
+        const res = await axios.get('http://localhost:5001/api/subscription/status', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setPlan(res.data.plan);
+        setSessionsUsed(res.data.sessionsUsed);
+      } catch (err) {
+        console.error("Failed to load subscription status from DB", err);
+      }
+    };
+
+    fetchSubscription();
+
     const currentMonth = new Date().toISOString().slice(0, 7); // "YYYY-MM"
     const storedMonth = localStorage.getItem(STORAGE_KEYS.billingMonth);
 
@@ -26,7 +46,7 @@ export const SubscriptionProvider = ({ children }) => {
       localStorage.setItem(STORAGE_KEYS.sessionsUsed, '0');
       setSessionsUsed(0);
     }
-  }, []);
+  }, [token]);
 
   // Persist plan changes
   useEffect(() => {
@@ -46,20 +66,37 @@ export const SubscriptionProvider = ({ children }) => {
     return sessionsUsed < SESSIONS_LIMIT_BASIC;
   }, [plan, sessionsUsed]);
 
-  const consumeSession = useCallback(() => {
+  const consumeSession = useCallback(async () => {
     if (plan === 'premium') return true;
     if (sessionsUsed >= SESSIONS_LIMIT_BASIC) return false;
+    
     setSessionsUsed((prev) => prev + 1);
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        await axios.post('http://localhost:5001/api/subscription/consume', {}, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      } catch (err) {
+        console.error("Failed to sync session consumption to DB", err);
+      }
+    }
     return true;
   }, [plan, sessionsUsed]);
 
-  /**
-   * Placeholder upgrade function.
-   * In production, this would be called after a successful Razorpay/Stripe payment callback.
-   * For the demo, it instantly sets the plan.
-   */
-  const upgradePlan = useCallback((newPlan) => {
+  const upgradePlan = useCallback(async (newPlan) => {
     setPlan(newPlan);
+    const token = localStorage.getItem('token');
+    if (token && newPlan === 'premium') {
+      try {
+        await axios.post('http://localhost:5001/api/subscription/upgrade', {}, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      } catch (err) {
+        console.error("Failed to sync plan upgrade to DB", err);
+      }
+    }
   }, []);
 
   const resetMonthlyUsage = useCallback(() => {

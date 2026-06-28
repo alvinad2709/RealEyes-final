@@ -50,7 +50,6 @@ export default function Footer() {
           <div className="space-y-4">
             <h4 className="font-mono text-xs text-white uppercase tracking-wider font-semibold">Platform</h4>
             <ul className="space-y-2 text-sm text-textMuted">
-              <li><span className="hover:text-white cursor-pointer transition-colors">About Us</span></li>
               <li><Link to="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
               <li><span className="hover:text-white cursor-pointer transition-colors">Documentation</span></li>
             </ul>
